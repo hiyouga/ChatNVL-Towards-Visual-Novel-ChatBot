@@ -5,8 +5,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/hiyouga/ChatNVL-Towards-Visual-Novel-ChatBot)
 ![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)
 
-👋 Join our [WeChat](assets/wechat.jpg).
-
 \[ English | [中文](README_zh.md) \]
 
 ## License
