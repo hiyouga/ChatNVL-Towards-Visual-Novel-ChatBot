@@ -5,14 +5,12 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/hiyouga/ChatNVL-Towards-Visual-Novel-ChatBot)
 ![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)
 
-👋 Join our [WeChat](assets/wechat.jpg).
+\[ [English](README.md) | 中文 \]
 
-\[ English | [中文](README_zh.md) \]
+## 协议
 
-## License
+本仓库的代码依照 [Apache-2.0](LICENSE) 协议开源。
 
-This repository is licensed under the [Apache-2.0 License](LICENSE).
+## 声明
 
-## Acknowledgement
-
-This repo is based on [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) and [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning). Thanks for their wonderful works.
+本项目基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) 和 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning)，感谢作者的付出。
