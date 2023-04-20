@@ -46,6 +46,7 @@ if __name__ == "__main__":
     names = [name for name, _ in name_list] # order is important!
     mapping = {name: name_id for name, name_id in name_list}
     dataset = []
+    yuiset = []
     for conv in chats:
         # delete and merge
         sents = []
@@ -57,7 +58,8 @@ if __name__ == "__main__":
                     sents.append([sent["speaker"], sent["chs"]]) # 0: speaker, 1: content
                     last_speaker = sent["speaker"]
                 else:
-                    sents[-1][1] += "。" + sent["chs"]
+                    if sents[-1][1][-1] not in ["。", "，", "？", "！", "）"]:
+                        sents[-1][1] += "。" + sent["chs"]
         # generate data
         if len(sents) < 2:
             continue
@@ -81,19 +83,37 @@ if __name__ == "__main__":
                     "output": text,
                     "history": sent_pairs
                 })
+                if sent[0] == "结衣":
+                    yuiset.append({
+                        "instruction": hist[-1],
+                        "input": "",
+                        "output": text,
+                        "history": sent_pairs
+                    })
             hist.append(text)
             total_len += len(text)
             while total_len > 1024:
                 dummy = hist.pop(0)
                 total_len -= len(dummy)
             idx += 1
-    json.dump(dataset, open(file_name+"/"+file_name+".chatglm.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    json.dump(dataset, open(file_name+"/"+file_name+".all.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
     random.shuffle(dataset)
-    json.dump(dataset[:100], open(file_name+"/"+file_name+".chatglm.test.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
-    json.dump(dataset[100:], open(file_name+"/"+file_name+".chatglm.train.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
-    with open(file_name+"/"+file_name+".chatglm.json", "r", encoding="utf-8", newline="\n") as f:
-        print(hashlib.sha1(f.read().encode()).hexdigest())
-    with open(file_name+"/"+file_name+".chatglm.train.json", "r", encoding="utf-8", newline="\n") as f:
-        print(hashlib.sha1(f.read().encode()).hexdigest())
-    with open(file_name+"/"+file_name+".chatglm.test.json", "r", encoding="utf-8", newline="\n") as f:
-        print(hashlib.sha1(f.read().encode()).hexdigest())
+    json.dump(dataset[:100], open(file_name+"/"+file_name+".all.test.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    json.dump(dataset[100:], open(file_name+"/"+file_name+".all.train.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    with open(file_name+"/"+file_name+".all.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
+    with open(file_name+"/"+file_name+".all.train.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
+    with open(file_name+"/"+file_name+".all.test.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
+
+    json.dump(yuiset, open(file_name+"/"+file_name+".yui.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    random.shuffle(yuiset)
+    json.dump(yuiset[:100], open(file_name+"/"+file_name+".yui.test.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    json.dump(yuiset[100:], open(file_name+"/"+file_name+".yui.train.json", "w", encoding="utf-8", newline="\n"), indent=4, ensure_ascii=False)
+    with open(file_name+"/"+file_name+".yui.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
+    with open(file_name+"/"+file_name+".yui.train.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
+    with open(file_name+"/"+file_name+".yui.test.json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
