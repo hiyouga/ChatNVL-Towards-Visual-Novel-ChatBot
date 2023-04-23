@@ -22,6 +22,7 @@ In the past decades, romance between humans and androids has become a popular th
 - AI tends to forget information after several turns of chat.
 - AI cannot achieve satisfactory performance with ineffective prompts.
 - AI sometimes refuses to follow some instruction given by humans.
+- AI cannot update its knowledge according to user's feedbacks.
 
 Despite the aforementioned limitations, AI has the potential of leveraging pretrained knowledge to imitate any virtual character. The effectiveness of prompts is questionable since the knowledge contained in AI remains unaffected. On the contrary, we conjecture that fine-tuning the PLMs under the objective of aligning their behaviors with virtual characters using the adequate corpus can achieve satisfactory results. Therefore, in this project, we aim to fine-tune the PLMs with state-of-the-art training schemes to generate AIs that behaves like arbitrary virtual characters. This will enable the realization of the dream presented in the visual novels.
 
@@ -56,8 +57,9 @@ We are based on the [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) model sinc
 
 The generated AI can equip with the following multimodal features:
 
-- [VITS](https://github.com/jaywalnut310/vits) - a Text-to-Speech model.
+- [VITS](https://github.com/jaywalnut310/vits) - Text to speech.
 - [Live2D](https://www.live2d.com/) - Animated 2D illustration.
+- [Whisper](https://openai.com/research/whisper) - Automatic speech recognition.
 
 ## Compared with Existing Projects
 
