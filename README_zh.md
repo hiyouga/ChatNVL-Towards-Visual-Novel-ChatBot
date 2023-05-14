@@ -43,15 +43,15 @@
 - 对话数据集。
   - 每条样本包含一个情境对话，其中有该角色的回答。它既可能是单轮对话也可能是多轮对话。
 
-目前我们正在处理下列几部视觉小说：
+目前我们正在处理以下几部视觉小说：
 
 - 恋×シンアイ彼女（已完成）
-- サノバウィッチ（进行中）
+- サノバウィッチ（已完成）
 - ハミダシクリエイティブ（进行中）
 
 ### 2. 语言模型微调（关键部分）
 
-我们基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) 模型，鉴于它在中文 NLP 任务上的优越能力。受 ChatGPT 启发，我们采用的微调范式是监督微调（SFT）和对齐。模型微调主要依赖于 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) 框架，更多详细内容请移步此项目。
+我们基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) 模型，鉴于它在中文 NLP 任务上的优越能力。受 ChatGPT 启发，我们采用的微调范式是监督微调（SFT）和强化学习（RLHF）。模型微调主要依赖于 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) 框架，更多详细内容请移步此项目。
 
 ### 3. 多模态特征加持
 

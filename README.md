@@ -46,12 +46,12 @@ The dataset includes two types:
 Now we are handling the following visual novels:
 
 - 恋×シンアイ彼女 (done)
-- サノバウィッチ (in progress)
+- サノバウィッチ (done)
 - ハミダシクリエイティブ (in progress)
 
 ### 2. Language Model Fine-tuning (Core)
 
-We are based on the [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) model since its remarkable performance in Chinese NLP tasks. Inspired by ChatGPT, the paradigm of fine-tuning we adopted is supervised fine-tuning (SFT) + alignment. Our fine-tuning largely depends on the [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) framework. Please refer to this repo for more details.
+We are based on the [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) model since its remarkable performance in Chinese NLP tasks. Inspired by ChatGPT, the paradigm of fine-tuning we adopted is supervised fine-tuning (SFT) and reinforcement learning with human feedback (RLHF). Our fine-tuning largely depends on the [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) framework. Please refer to this repo for more details.
 
 ### 3. Equipping with Multimodal Features
 
