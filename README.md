@@ -51,7 +51,7 @@ Now we are handling the following visual novels:
 
 ### 2. Language Model Fine-tuning (Core)
 
-We are based on the [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) model since its remarkable performance in Chinese NLP tasks. Inspired by ChatGPT, the paradigm of fine-tuning we adopted is supervised fine-tuning (SFT) and reinforcement learning with human feedback (RLHF). Our fine-tuning largely depends on the [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) framework. Please refer to this repo for more details.
+We are based on the pre-trained large language models that trained on massive Chinese corpus. Inspired by ChatGPT, the paradigm of fine-tuning we adopted is supervised fine-tuning (SFT) and reinforcement learning with human feedback (RLHF). Our fine-tuning largely depends on the [LLaMA-Efficient-Tuning](https://github.com/hiyouga/LLaMA-Efficient-Tuning) and [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) framework. Please refer to these repos for more details.
 
 ### 3. Equipping with Multimodal Features
 
@@ -81,4 +81,4 @@ This repository is licensed under the [Apache-2.0 License](LICENSE).
 
 ## Acknowledgement
 
-This repo is based on [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) and [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning). Thanks for their wonderful works.
+This repo is based on [LLaMA-Efficient-Tuning](https://github.com/hiyouga/LLaMA-Efficient-Tuning) and [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning).

@@ -1,121 +1,101 @@
 import re
 import json
-import random
 import hashlib
+from itertools import chain
 
 
-def check_sent(sent, stopwords):
-    if len(sent) < 6:
+def check_sentence(sentence, stopwords):
+    if len(sentence) < 6:
         return False
     stop_cnt = 0
-    for ch in sent:
+    for ch in sentence:
         if ch in stopwords:
             stop_cnt += 1
-    if stop_cnt > len(sent) * 0.5:
+    if stop_cnt > len(sentence) * 0.5:
         return False
     return True
 
 
-# def replace_name(sent, names, mapping, past_speaker, next_speaker):
-#     for name in names:
-#         if name not in sent[1]:
-#             continue
-#         if mapping[name] == mapping[sent[0]]:
-#             sent[1] = sent[1].replace(name, "我")
-#         elif past_speaker is not None and mapping[name] == mapping[past_speaker]:
-#             sent[1] = sent[1].replace(name, "你")
-#         elif next_speaker is not None and mapping[name] == mapping[next_speaker]:
-#             sent[1] = sent[1].replace(name, "你")
-#         else:
-#             sent[1] = sent[1].replace(name, "她")
-#     sent[1] = re.sub(r"我+", "我", sent[1])
-#     sent[1] = re.sub(r"你+", "你", sent[1])
-#     sent[1] = re.sub(r"她+", "她", sent[1])
-#     return sent[1]
-
-
 if __name__ == "__main__":
 
-    file_name = "sanoba"
+    file_name = "koikake"
+    person_name = "结衣"
+    max_length = 384
+    window_size = 128
+
     with open("stopwords.txt", "r", encoding="utf-8", newline="\n") as f:
         stopwords = f.read().strip().split("\n")
     with open(file_name+"/"+file_name+".name.json", "r", encoding="utf-8", newline="\n") as f:
         name_list = json.load(f)
     with open(file_name+"/"+file_name+".chat.json", "r", encoding="utf-8", newline="\n") as f:
-        chats = json.load(f)
+        dialog_list = json.load(f)
+
     names = [name for name, _ in name_list] # order is important!
     mapping = {name: name_id for name, name_id in name_list}
     dataset = []
-    yuiset = []
-    for conv in chats:
+    personset = []
+    for dialog in dialog_list:
         # delete and merge
-        sents = []
+        texts_with_speaker = []
         last_speaker = None
-        for sent in conv:
-            sent["chs"] = re.sub(r"…+", "…", sent["chs"])
-            sent["chs"] = re.sub(r"—+", "", sent["chs"])
-            if check_sent(sent["chs"], stopwords):
-                if sent["speaker"] != last_speaker:
-                    sents.append([sent["speaker"], sent["chs"]]) # 0: speaker, 1: content
-                    last_speaker = sent["speaker"]
+        for sentence in dialog:
+            chn_text = sentence["chs"]
+            chn_text = re.sub(r"…+", "…", chn_text)
+            chn_text = re.sub(r"—+", "", chn_text)
+            if check_sentence(chn_text, stopwords):
+                if sentence["speaker"] != last_speaker:
+                    texts_with_speaker.append([sentence["speaker"], chn_text]) # 0: speaker, 1: content
+                    last_speaker = sentence["speaker"]
                 else:
-                    if sents[-1][1][-1] not in ["。", "，", "？", "！", "）"]:
-                        sents[-1][1] += "。" + sent["chs"]
-        # generate data
-        if len(sents) < 2:
+                    if texts_with_speaker[-1][1][-1] not in ["。", "，", "？", "！", "）", "…"]:
+                        texts_with_speaker[-1][1] += "。" + chn_text
+                    else:
+                        texts_with_speaker[-1][1] += chn_text
+
+        if len(texts_with_speaker) < 2:
             continue
-        hist = []
-        total_len = 0
-        idx = 0
-        while idx < len(sents):
-            sent = sents[idx]
-            past_speaker = sents[idx-1][0] if idx > 0 else None
-            next_speaker = sents[idx+1][0] if idx < len(sents) - 1 else None
-            # text = replace_name(sent, names, mapping, past_speaker, next_speaker)
-            text = sent[1]
-            if len(hist) > 0:
-                if len(hist) % 2 == 1:
-                    sent_pairs = [(hist[2*i], hist[2*i+1]) for i in range(len(hist) // 2)]
-                else:
-                    sent_pairs = [(hist[2*i+1], hist[2*i+2]) for i in range((len(hist)-1) // 2)]
-                dataset.append({
-                    "instruction": hist[-1],
-                    "input": "",
-                    "output": text,
-                    "history": sent_pairs
-                })
-                if sent[0] == "结衣":
-                    yuiset.append({
-                        "instruction": hist[-1],
+
+        # group text with window size
+        grouped_texts = []
+        current_group = []
+        current_length = 0
+        for speaker, text in texts_with_speaker:
+            current_group.append((speaker, text))
+            current_length += len(text)
+            if current_length >= window_size:
+                grouped_texts.append(current_group)
+                current_group = []
+                current_length = 0
+        if current_length != 0:
+            grouped_texts.append(current_group)
+
+        # split text with max length
+        group_size = max_length // window_size
+        for i in range(0, len(grouped_texts), group_size - 1):
+            current_texts = list(chain(*grouped_texts[i : i + group_size]))
+            for j in range(2):
+                name_pairs = [(current_texts[2*k+j][0], current_texts[2*k+j+1][0]) for k in range((len(current_texts) - j) // 2)]
+                text_pairs = [(current_texts[2*k+j][1], current_texts[2*k+j+1][1]) for k in range((len(current_texts) - j) // 2)]
+                if len(text_pairs) > 0:
+                    dataset.append({
+                        "instruction": text_pairs[-1][0],
                         "input": "",
-                        "output": text,
-                        "history": sent_pairs
+                        "output": text_pairs[-1][1],
+                        "history": text_pairs[:-1]
                     })
-            hist.append(text)
-            total_len += len(text)
-            while total_len > 512:
-                dummy = hist.pop(0)
-                total_len -= len(dummy)
-            idx += 1
+                    if name_pairs[-1][1] == person_name:
+                        personset.append({
+                            "instruction": text_pairs[-1][0],
+                            "input": "",
+                            "output": text_pairs[-1][1],
+                            "history": text_pairs[:-1]
+                        })
+
     json.dump(dataset, open("generated/"+file_name+".all.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
-    random.shuffle(dataset)
-    json.dump(dataset[:100], open("generated/"+file_name+".all.test.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
-    json.dump(dataset[100:], open("generated/"+file_name+".all.train.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
     with open("generated/"+file_name+".all.json", "rb") as f:
-        print(hashlib.sha1(f.read()).hexdigest())
-    with open("generated/"+file_name+".all.train.json", "rb") as f:
-        print(hashlib.sha1(f.read()).hexdigest())
-    with open("generated/"+file_name+".all.test.json", "rb") as f:
         print(hashlib.sha1(f.read()).hexdigest())
 
     if file_name == "koikake":
-        json.dump(yuiset, open("generated/"+file_name+".yui.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
-        random.shuffle(yuiset)
-        json.dump(yuiset[:100], open("generated/"+file_name+".yui.test.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
-        json.dump(yuiset[100:], open("generated/"+file_name+".yui.train.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
+        json.dump(personset, open("generated/"+file_name+".yui.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
         with open("generated/"+file_name+".yui.json", "rb") as f:
-            print(hashlib.sha1(f.read()).hexdigest())
-        with open("generated/"+file_name+".yui.train.json", "rb") as f:
-            print(hashlib.sha1(f.read()).hexdigest())
-        with open("generated/"+file_name+".yui.test.json", "rb") as f:
             print(hashlib.sha1(f.read()).hexdigest())

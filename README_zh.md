@@ -51,7 +51,7 @@
 
 ### 2. 语言模型微调（关键部分）
 
-我们基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) 模型，鉴于它在中文 NLP 任务上的优越能力。受 ChatGPT 启发，我们采用的微调范式是监督微调（SFT）和强化学习（RLHF）。模型微调主要依赖于 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) 框架，更多详细内容请移步此项目。
+我们的工作基于在大量中文语料上经过训练的大型语言模型。受 ChatGPT 启发，我们采用的微调范式是监督微调（SFT）和强化学习（RLHF）。模型微调主要依赖于 [LLaMA-Efficient-Tuning](https://github.com/hiyouga/LLaMA-Efficient-Tuning) 和 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning) 框架，更多详细内容请移步这些项目。
 
 ### 3. 多模态特征加持
 
@@ -81,4 +81,4 @@
 
 ## 声明
 
-本项目基于 [ChatGLM-6B](https://github.com/THUDM/ChatGLM-6B) 和 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning)，感谢作者的付出。
+本项目基于 [LLaMA-Efficient-Tuning](https://github.com/hiyouga/LLaMA-Efficient-Tuning) 和 [ChatGLM-Efficient-Tuning](https://github.com/hiyouga/ChatGLM-Efficient-Tuning)。
