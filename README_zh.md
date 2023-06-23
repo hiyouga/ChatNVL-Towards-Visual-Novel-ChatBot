@@ -1,4 +1,4 @@
-# ChatNVL! Towards Visual Novel ChatBot
+# ChatNVL! Chat with Characters in Visual Novels
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/ChatNVL-Towards-Visual-Novel-ChatBot?style=social)
 ![GitHub Code License](https://img.shields.io/github/license/hiyouga/ChatNVL-Towards-Visual-Novel-ChatBot)
@@ -47,6 +47,7 @@
 
 - 恋×シンアイ彼女（已完成）
 - サノバウィッチ（已完成）
+- 千恋＊万花（已完成）
 - ハミダシクリエイティブ（进行中）
 
 ### 2. 语言模型微调（关键部分）

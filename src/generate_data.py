@@ -18,23 +18,20 @@ def check_sentence(sentence, stopwords):
 
 if __name__ == "__main__":
 
-    file_name = "koikake"
-    person_name = "结衣"
+    file_name = "sanoba"
+    person_name = "宁宁"
+    person_id = "nene"
     max_length = 384
     window_size = 128
 
     with open("stopwords.txt", "r", encoding="utf-8", newline="\n") as f:
         stopwords = f.read().strip().split("\n")
-    with open(file_name+"/"+file_name+".name.json", "r", encoding="utf-8", newline="\n") as f:
-        name_list = json.load(f)
     with open(file_name+"/"+file_name+".chat.json", "r", encoding="utf-8", newline="\n") as f:
-        dialog_list = json.load(f)
+        dialogs = json.load(f)
 
-    names = [name for name, _ in name_list] # order is important!
-    mapping = {name: name_id for name, name_id in name_list}
     dataset = []
     personset = []
-    for dialog in dialog_list:
+    for dialog in dialogs:
         # delete and merge
         texts_with_speaker = []
         last_speaker = None
@@ -76,6 +73,7 @@ if __name__ == "__main__":
             for j in range(2):
                 name_pairs = [(current_texts[2*k+j][0], current_texts[2*k+j+1][0]) for k in range((len(current_texts) - j) // 2)]
                 text_pairs = [(current_texts[2*k+j][1], current_texts[2*k+j+1][1]) for k in range((len(current_texts) - j) // 2)]
+                person_pairs = [text_pairs[i] for i in range(len(text_pairs)) if name_pairs[i][1] == person_name]
                 if len(text_pairs) > 0:
                     dataset.append({
                         "instruction": text_pairs[-1][0],
@@ -83,19 +81,18 @@ if __name__ == "__main__":
                         "output": text_pairs[-1][1],
                         "history": text_pairs[:-1]
                     })
-                    if name_pairs[-1][1] == person_name:
-                        personset.append({
-                            "instruction": text_pairs[-1][0],
-                            "input": "",
-                            "output": text_pairs[-1][1],
-                            "history": text_pairs[:-1]
-                        })
+                if len(person_pairs) > 0:
+                    personset.append({
+                        "instruction": person_pairs[-1][0],
+                        "input": "",
+                        "output": person_pairs[-1][1],
+                        "history": person_pairs[:-1]
+                    })
 
     json.dump(dataset, open("generated/"+file_name+".all.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
     with open("generated/"+file_name+".all.json", "rb") as f:
         print(hashlib.sha1(f.read()).hexdigest())
 
-    if file_name == "koikake":
-        json.dump(personset, open("generated/"+file_name+".yui.json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
-        with open("generated/"+file_name+".yui.json", "rb") as f:
-            print(hashlib.sha1(f.read()).hexdigest())
+    json.dump(personset, open("generated/"+file_name+"."+person_id+".json", "w", encoding="utf-8", newline="\n"), indent=2, ensure_ascii=False)
+    with open("generated/"+file_name+"."+person_id+".json", "rb") as f:
+        print(hashlib.sha1(f.read()).hexdigest())
